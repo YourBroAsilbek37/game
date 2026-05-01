@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soviet shooter</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            display: block;
+            position: fixed;
+            z-index: -1;
+            height: 100%;
+            width: 100%;
+            background: url(img/qayin.jpg) repeat-x bottom left;
+        }
+
+        @keyframes duckfly {
+            0% {
+                left: 100%;
+                bottom: 0%;
+            }
+
+            25% {
+                left: 70%;
+                bottom: 0%;
+            }
+
+            50% {
+                left: 50%;
+                bottom: 0%;
+            }
+
+            75% {
+                left: 40%;
+                bottom: 0%;
+            }
+
+            100% {
+                left: -10%;
+                bottom: 0%;
+            }
+        }
+
+        input+label {
+            position: absolute;
+            left: -100px;
+            z-index: 1;
+            height: 36px;
+            width: 34px;
+            display: block;
+            z-index: 5;
+            transform: translate(-50px, -50px);
+            background: url(img/к.png) no-repeat;
+            background-position: -138px 0;
+        }
+
+        input:checked+label {
+            opacity: 0;
+            transition: 1s;
+            transform: rotate(120deg);
+            transform-origin: 60%;
+            z-index: -5;
+        }
+
+        .duck:nth-last-of-type(1) {
+            animation: duckfly 10s linear 1s infinite;
+        }
+
+        .duck:nth-last-of-type(2) {
+            animation: duckfly 20s linear 1s infinite;
+        }
+
+        .duck:nth-last-of-type(3) {
+            animation: duckfly 8s linear 1s infinite;
+        }
+
+        .duck:nth-last-of-type(4) {
+            animation: duckfly 16s linear 1s infinite;
+        }
+
+        .duck:nth-last-of-type(5) {
+            animation: duckfly 9s linear 1s infinite;
+        }
+
+        .duck:nth-last-of-type(6) {
+            animation: duckfly 90s linear 1s infinite;
+        }
+
+        .duck:nth-last-of-type(7) {
+            animation: duckfly 7s linear 1s infinite;
+        }
+
+        .duck:nth-last-of-type(8) {
+            animation: duckfly 6s linear 1s infinite;
+        }
+
+        .duck:nth-last-of-type(9) {
+            animation: duckfly 15s linear 1s infinite;
+        }
+
+        .score {
+            position: absolute;
+            bottom: 0;
+            height: 50px;
+            line-height: 50px;
+            background-color: #dadada;
+            width: 100%;
+            z-index: 2;
+            align-items: center;
+        }
+
+        .score::after {
+            content: counter(score);
+            display: inline-block;
+        }
+
+        .score::before {
+            content: 'Score :';
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        input:checked {
+            counter-increment: score;
+        }
+    </style>
+
+</head>
+
+<body onclick="document.getElementById('sound1') .play()">
+    <audio id="sound1" src="m1-garand-rifle-80192.mp3" preload="auto"></audio>
+    <input type="checkbox" id="duck1">
+    <label for="duck1" class="duck"></label>
+
+    <input type="checkbox" id="duck2">
+    <label for="duck2" class="duck"></label>
+
+    <input type="checkbox" id="duck3">
+    <label for="duck3" class="duck"></label>
+
+    <input type="checkbox" id="duck4">
+    <label for="duck4" class="duck"></label>
+
+    <input type="checkbox" id="duck5">
+    <label for="duck5" class="duck"></label>
+
+    <input type="checkbox" id="duck6">
+    <label for="duc65" class="duck"></label>
+
+    <input type="checkbox" id="duck7">
+    <label for="duck7" class="duck"></label>
+
+    <input type="checkbox" id="duck8">
+    <label for="duck8" class="duck"></label>
+
+    <input type="checkbox" id="duck9">
+    <label for="duck9" class="duck"></label>
+    <div class="score"></div>
+</body>
+
+</html>
