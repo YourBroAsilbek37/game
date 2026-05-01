@@ -131,15 +131,15 @@
             let speed;
 
             if (type === 'plane') {
-                // Samolyotlar osmonda
+                // Samolyot
                 posY = Math.random() * (window.innerHeight * 0.3) + 50;
                 speed = Math.random() * 4 + 7; 
             } else if (type === 'tank') {
-                // Tanklar yerda
+                // Tank
                 posY = window.innerHeight - 270;
                 speed = 1.8;
             } else {
-                // Askarlar yerda
+                // Askarlar
                 posY = window.innerHeight - 160 + (Math.random() * 115 - 120);
                 speed = Math.random() * 2 + 3;
             }
@@ -165,7 +165,7 @@
                 if (enemy.classList.contains('dead')) return;
 
                 if (type === 'plane') {
-                    playEffect(tankSound); // Portlash ovozi
+                    playEffect(tankSound);
                     score += 10;
                 } else if (type === 'tank') {
                     playEffect(tankSound);
@@ -185,10 +185,9 @@
             });
         }
 
-        // Dushmanlarni chiqarish (Sikl)
         const spawnTimer = setInterval(() => {
             const rand = Math.random();
-            if (rand < 0.7) {
+            if (rand < 0.4) {
                 createEnemy('soldier'); 
             } else if (rand < 0.95) {
                 createEnemy('tank');    
@@ -197,7 +196,6 @@
             }
         }, 1200);
 
-        // Taymer funksiyasi
         const gameClock = setInterval(() => {
             timeLeft--;
             timerEl.textContent = timeLeft;
