@@ -1,0 +1,46 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: 'Arial', sans-serif;
+    background: #222;
+}
+
+.game-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: url('img/qayin.jpg') no-repeat bottom center;
+    background-size: cover;
+    cursor: crosshair;
+}
+
+.stats {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 30px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px 30px;
+    border-radius: 20px;
+    z-index: 10;
+}
+
+.duck {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: url('img/k.png') no-repeat;
+    background-position: -138px 0; /* Sizning rasmingizga moslab olasiz */
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.duck.dead {
+    transform: rotate(180deg) translateY(200px);
+    opacity: 0;
+    transition: 0.8s;
+    pointer-events: none;
+}
