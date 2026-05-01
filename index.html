@@ -1,20 +1,215 @@
 <!DOCTYPE html>
 <html lang="uz">
+
 <head>
     <meta charset="UTF-8">
     <title>Soviet Shooter Pro</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Courier New', Courier, monospace;
+            background: #1a1a1a;
+            user-select: none;
+        }
+
+        .game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('img/360_F_114471205_0O1mMyKE100dWY4kqoDKBNYJDto53kkt.jpg') no-repeat bottom center;
+            background-size: cover;
+            box-shadow: inset 0 0 150px rgba(0, 0, 0, 0.8);
+            cursor: crosshair;
+        }
+
+        .stats {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 40px;
+            background: rgba(34, 46, 32, 0.9);
+            color: #f1f1f1;
+            padding: 15px 40px;
+            border: 3px solid #4a5d43;
+            border-radius: 5px;
+            z-index: 100;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Dushmanlar umumiy stili */
+        .soldier, .tank, .plane {
+            position: absolute;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            transition: transform 0.1s linear;
+        }
+
+        .soldier {
+            width: 70px;
+            height: 80px;
+            background-image: url('img/Soldier.png');
+            filter: drop-shadow(5px 5px 5px rgba(0, 0, 0, 0.5));
+            z-index: 50;
+        }
+
+        .tank {
+            width: 200px;
+            height: 150px; /* Bo'yini biroz kichraytirdik realroq chiqishi uchun */
+            background-image: url('img/tank.png');
+            filter: drop-shadow(10px 10px 10px rgba(0, 0, 0, 0.6));
+            z-index: 45;
+        }
+
+        .plane {
+            width: 120px;
+            height: 80px;
+            background-image: url('https://img.icons8.com/color/150/fighter-jet.png');
+            filter: drop-shadow(0 20px 10px rgba(0, 0, 0, 0.3));
+            z-index: 60;
+        }
+
+        /* O'lim effekti */
+        .dead {
+            filter: grayscale(1) brightness(0.3) blur(2px) !important;
+            transform: scale(0.9) translateY(30px) rotate(15deg) !important;
+            opacity: 0;
+            transition: 0.8s;
+            pointer-events: none;
+        }
+
+        .plane.dead {
+            filter: hue-rotate(180deg) brightness(2) blur(5px) !important;
+            transform: scale(1.5) rotate(45deg) !important;
+        }
+    </style>
 </head>
+
 <body>
+
     <div class="game-container">
         <div class="stats">
             <div>Ochko: <span id="score">0</span></div>
-            <div>Vaqt: <span id="timer">30</span>s</div>
+            <div>Vaqt: <span id="timer">60</span>s</div>
         </div>
         <div id="game-canvas"></div>
     </div>
-    <audio id="shot-sound" src="m1-garand-rifle-80192.mp3"></audio>
-    
-    <script src="script.js"></script>
+
+    <!-- Audio elementlar -->
+    <audio id="rifle-shot" src="freesound_community-battle-rifle-42734.mp3" preload="auto"></audio>
+    <audio id="tank-shot" src="lordsonny-cannon-fire-161072.mp3" preload="auto"></audio>
+
+    <script>
+        const canvas = document.getElementById('game-canvas');
+        const scoreEl = document.getElementById('score');
+        const timerEl = document.getElementById('timer');
+        const rifleSound = document.getElementById('rifle-shot');
+        const tankSound = document.getElementById('tank-shot');
+
+        let score = 0;
+        let timeLeft = 60;
+        let gameActive = true;
+
+        function playEffect(audio) {
+            if(!audio) return;
+            audio.currentTime = 0;
+            audio.play().catch(e => console.log("Audio xatosi"));
+        }
+
+        function createEnemy(type) {
+            if (!gameActive) return;
+
+            const enemy = document.createElement('div');
+            enemy.className = type;
+
+            let posX = -250;
+            let posY;
+            let speed;
+
+            if (type === 'plane') {
+                // Samolyotlar osmonda
+                posY = Math.random() * (window.innerHeight * 0.3) + 50;
+                speed = Math.random() * 4 + 7; 
+            } else if (type === 'tank') {
+                // Tanklar yerda
+                posY = window.innerHeight - 270;
+                speed = 1.8;
+            } else {
+                // Askarlar yerda
+                posY = window.innerHeight - 160 + (Math.random() * 115 - 120);
+                speed = Math.random() * 2 + 3;
+            }
+
+            enemy.style.top = `${posY}px`;
+            enemy.style.left = `${posX}px`;
+            canvas.appendChild(enemy);
+
+            const moveInterval = setInterval(() => {
+                if (!gameActive) { clearInterval(moveInterval); return; }
+                
+                posX += speed;
+                enemy.style.left = `${posX}px`;
+
+                if (posX > window.innerWidth + 300) {
+                    enemy.remove();
+                    clearInterval(moveInterval);
+                }
+            }, 16);
+
+            enemy.addEventListener('mousedown', (e) => {
+                e.stopPropagation();
+                if (enemy.classList.contains('dead')) return;
+
+                if (type === 'plane') {
+                    playEffect(tankSound); // Portlash ovozi
+                    score += 10;
+                } else if (type === 'tank') {
+                    playEffect(tankSound);
+                    score += 5;
+                } else {
+                    playEffect(rifleSound);
+                    score += 1;
+                }
+
+                scoreEl.textContent = score;
+                enemy.classList.add('dead');
+
+                setTimeout(() => {
+                    enemy.remove();
+                    clearInterval(moveInterval);
+                }, 700);
+            });
+        }
+
+        // Dushmanlarni chiqarish (Sikl)
+        const spawnTimer = setInterval(() => {
+            const rand = Math.random();
+            if (rand < 0.7) {
+                createEnemy('soldier'); 
+            } else if (rand < 0.95) {
+                createEnemy('tank');    
+            } else {
+                createEnemy('plane');   
+            }
+        }, 1200);
+
+        // Taymer funksiyasi
+        const gameClock = setInterval(() => {
+            timeLeft--;
+            timerEl.textContent = timeLeft;
+            if (timeLeft <= 0) {
+                gameActive = false;
+                clearInterval(spawnTimer);
+                clearInterval(gameClock);
+                alert("O'yin tugadi! Sizning natijangiz: " + score);
+                location.reload();
+            }
+        }, 1000);
+    </script>
 </body>
+
 </html>

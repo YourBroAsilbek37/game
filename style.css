@@ -32,8 +32,8 @@ body {
     position: absolute;
     width: 60px;
     height: 60px;
-    background: url('img/k.png') no-repeat;
-    background-position: -138px 0; /* Sizning rasmingizga moslab olasiz */
+    background: url('img/Soldier.png') no-repeat;
+    background-position: -800px 0; /* Sizning rasmingizga moslab olasiz */
     cursor: pointer;
     transition: transform 0.2s;
 }
